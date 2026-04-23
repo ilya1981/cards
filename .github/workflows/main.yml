@@ -68,13 +68,13 @@ jobs:
           cache: 'yarn'
       # 3. установка зависимостей
       - name: Install dependencies
-        run: yarn build
+        run: yarn install
       # 4. очистка старых артефактов Pages (по необходимости)
       - name: Clean old build artifacts
         run: rm -rf ./dist || true
       # 5. сборка проекта
       - name: Build project
-        run: yarn build
+        run: yarn install
       # 6. настройка Pages и environment:
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v4
