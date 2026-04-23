@@ -41,7 +41,7 @@ jobs:
           cache: 'yarn'
       # 3. установка зависимостей
       - name: Install dependencies
-        run: yarn run build
+        run: yarn install
       # 4. запуск линтера
       #- name: Run ESLint
        # run: npm run lint
@@ -68,13 +68,13 @@ jobs:
           cache: 'yarn'
       # 3. установка зависимостей
       - name: Install dependencies
-        run: yarn run start
+        run: yarn start
       # 4. очистка старых артефактов Pages (по необходимости)
       - name: Clean old build artifacts
         run: rm -rf ./dist || true
       # 5. сборка проекта
       - name: Build project
-        run: yarn run build
+        run: yarn build
       # 6. настройка Pages и environment:
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v4
