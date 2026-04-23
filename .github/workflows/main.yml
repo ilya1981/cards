@@ -41,7 +41,7 @@ jobs:
           cache: 'yarn'
       # 3. установка зависимостей
       - name: Install dependencies
-        run: yarn install
+        run: yarn build
       # 4. запуск линтера
       - name: Run ESLint
         run: yarn run lint
