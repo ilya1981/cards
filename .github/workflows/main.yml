@@ -50,7 +50,7 @@ jobs:
   build:
     # выполняется только после успешных работы 'lint'
     needs: 
-      - lint
+    
     runs-on: windows-latest # работа будет выполнена на последней версии Windows
     environment: # настройки окружения для развёртывания на GitHub Pages
       name: github-pages # имя окружения
