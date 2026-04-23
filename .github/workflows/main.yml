@@ -34,21 +34,24 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
       # 2. установка Node.js и кеширование npm
-      - name: Setup Node.js and enable npm cache
+      - name: Setup Node.js and enable yarn cache
         uses: actions/setup-node@v4
         with:
-          node-version: 20.13.1
+          node-version: 25.9.0
           cache: 'yarn'
-         
-     
-     
+      # 3. установка зависимостей
+      - name: Install dependencies
+        run: yarn run build
+      # 4. запуск линтера
+      #- name: Run ESLint
+       # run: npm run lint
 
   # Job-2 - сборка и деплой на GitHub Pages:
   build:
     # выполняется только после успешных работы 'lint'
-    needs: 
-      - lint
-    runs-on: windows-latestt # работа будет выполнена на последней версии Ubuntu
+    #needs: 
+    #  - lint
+    runs-on: windows-latest # работа будет выполнена на последней версии Ubuntu
     environment: # настройки окружения для развёртывания на GitHub Pages
       name: github-pages # имя окружения
       url: ${{ steps.deployment.outputs.page_url }} # URL для деплоя (вывод из шага deployment)
@@ -61,15 +64,17 @@ jobs:
       - name: Setup Node.js and enable npm cache
         uses: actions/setup-node@v4
         with:
-          node-version: 25.9.0
-
-     
+          node-version: 20.13.1
+          cache: 'yarn'
+      # 3. установка зависимостей
+      - name: Install dependencies
+        run: yarn run start
       # 4. очистка старых артефактов Pages (по необходимости)
       - name: Clean old build artifacts
         run: rm -rf ./dist || true
       # 5. сборка проекта
       - name: Build project
-        run: npm run build
+        run: yarn run build
       # 6. настройка Pages и environment:
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v4
@@ -82,4 +87,3 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment # deployment позволяет получить URL страницы через outputs
         uses: actions/deploy-pages@v4
-        
