@@ -65,14 +65,11 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20.13.1
-          cache: 'yarn'
+
      
       # 4. очистка старых артефактов Pages (по необходимости)
       - name: Clean old build artifacts
         run: rm -rf ./dist || true
-      # 5. сборка проекта
-      - name: Build project
-        run: yarn run build
       # 6. настройка Pages и environment:
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v4
