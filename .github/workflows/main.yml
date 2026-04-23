@@ -68,7 +68,7 @@ jobs:
           cache: 'yarn'
       # 3. установка зависимостей
       - name: Install dependencies
-        run: yarn start
+        run: yarn build
       # 4. очистка старых артефактов Pages (по необходимости)
       - name: Clean old build artifacts
         run: rm -rf ./dist || true
