@@ -39,9 +39,7 @@ jobs:
         with:
           node-version: 20.13.1
           cache: 'yarn'
-      # 3. установка зависимостей
-      - name: Install dependencies
-        run: yarn run build
+     
       # 4. запуск линтера
       - name: Run ESLint
         run: yarn run lint
