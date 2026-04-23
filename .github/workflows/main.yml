@@ -74,7 +74,7 @@ jobs:
         run: rm -rf ./dist || true
       # 5. сборка проекта
       - name: Build project
-        run: build
+        run: yarn build
       # 6. настройка Pages и environment:
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v4
