@@ -1,91 +1,71 @@
-# название workflow (имя даём сами):
-name: Cards
+name: goblin-game
 
-# способы запуска workflow:
 on:
-  # 1. при каждом пуше в ветку 'main'
   push:
-    branches: 
-      - main
-    paths-ignore:
-      - '**/*.md'
-      - 'LICENSE'
-  # 2. разрешаем также ручной запуск из вкладки Actions на GitHub
+
+  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-# настройка разрешений для токена GITHUB_TOKEN для деплоя на GitHub Pages:
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
-  contents: read   # разрешить чтение содержимого
-  pages: write     # разрешить запись на GitHub Pages
-  id-token: write  # разрешить использование токена идентификации (для Pages)
+  contents: read
+  pages: write
+  id-token: write
 
-# ограничение параллельных запусков workflow
+# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
+# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
 concurrency:
-  group: 'webpack-pages' # группа workflow для деплоя (имя даём сами)
-  cancel-in-progress: true # отменяем старые, оставляем только последний запуск (актуальный деплой)
+  group: 'pages'
+  cancel-in-progress: false
 
-# описание работ:
 jobs:
-  # Job-1 - проверка кода линтером:
-  lint:
-    runs-on: windows-latest # работа будет выполнена на последней версии Windows
-    steps: # шаги выполнения работы
-      # 1. клонирование репозитория
-      - name: Checkout repository
-        uses: actions/checkout@v4
-      # 2. установка Node.js и кеширование npm
-      - name: Setup Node.js and enable npm cache
-        uses: actions/setup-node@v4
+  eslint:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 25.9.0
           cache: 'yarn'
-      # 3. установка зависимостей
-      - name: Install dependencies
-        run: yarn install
-      # 4. запуск линтера
-      - name: Run ESLint
-        run: yarn run lint
+      - run: yarn
+      - run: yarn lint
 
-  # Job-2 - сборка и деплой на GitHub Pages:
+ # test:
+ #   runs-on: windows-latest
+
+ #   steps:
+ #     - uses: actions/checkout@v4
+  #    - uses: actions/setup-node@v4
+ #        with:
+  #        node-version: 25.9.0
+   #       cache: 'yarn'
+  #    - run: yarn
+  #    - run: yarn test
+
   build:
-    # выполняется только после успешных работы 'lint'
-    needs: [lint]
+    needs: [eslint]
 
-    
-    runs-on: windows-latest # работа будет выполнена на последней версии Windows
-    environment: # настройки окружения для развёртывания на GitHub Pages
-      name: github-pages # имя окружения
-      url: ${{ steps.deployment.outputs.page_url }} # URL для деплоя (вывод из шага deployment)
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
 
-    steps: # шаги выполнения работы
-      # 1. клонирование репозитория
-      - name: Checkout repository
-        uses: actions/checkout@v4
-      # 2. установка Node.js и кеширование npm
-      - name: Setup Node.js and enable npm cache
-        uses: actions/setup-node@v4
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: 20.13.1
+          node-version: 25.9.0
           cache: 'yarn'
-      # 3. установка зависимостей
-      - name: Install dependencies
-        run: yarn install
-      # 4. очистка старых артефактов Pages (по необходимости)
-      - name: Clean old build artifacts
-        run: rm -rf ./dist || true
-      # 5. сборка проекта
-      - name: Build project
-        run: yarn run build
-      # 6. настройка Pages и environment:
-      - name: Configure GitHub Pages
+      - run: yarn
+      - run: yarn build
+      - name: Setup Pages
         uses: actions/configure-pages@v4
-      # 7. загрузка новых артефактов (dist) для деплоя:
-      - name: Upload Pages artifact
+      - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: 'dist' # указываем директорию с готовой сборкой
-      # 8. деплой на GitHub Pages:
+          path: 'dist'
       - name: Deploy to GitHub Pages
-        id: deployment # deployment позволяет получить URL страницы через outputs
+        id: deployment
         uses: actions/deploy-pages@v4
-        
